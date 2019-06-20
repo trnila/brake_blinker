@@ -1,0 +1,13 @@
+serial=/dev/ttyUSB0
+out=/sdcard/capture_$(date +"%Y_%m_%d_%H:%M:%S")
+
+echo "Measurements are written to $out"
+
+tsudo bash <<EOF
+	/system/bin/insmod /sdcard/cp210x.ko
+	while true; do
+		stty -F "$serial" 115200 raw
+		pv -l < "$serial" >> "$out"
+		sleep 1
+	done
+EOF
